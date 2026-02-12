@@ -69,18 +69,30 @@ erDiagram
     USER {
         string username
         string email
+        string password
         string role
+        string key
         objectId schoolId
+        date createdAt
+        date updatedAt
     }
     SCHOOL {
         string name
         string address
         string contactEmail
+        string phoneNumber
+        map metadata
+        date createdAt
+        date updatedAt
     }
     CLASSROOM {
         string name
-        number capacity
         objectId schoolId
+        number capacity
+        array resources
+        number floor
+        date createdAt
+        date updatedAt
     }
     STUDENT {
         string firstName
@@ -88,6 +100,9 @@ erDiagram
         string email
         objectId schoolId
         objectId classroomId
+        string enrollmentStatus
+        date createdAt
+        date updatedAt
     }
 ```
 
