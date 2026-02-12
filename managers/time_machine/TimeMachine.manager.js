@@ -13,7 +13,6 @@ module.exports = class TimeMachine {
                 _members: [`${createdPost._id}~-${decrease}:!`]
             }
         });
-        console.log(iterations);
         iterations -= 1;
         if (iterations > 0){
             this.aeon.call( {

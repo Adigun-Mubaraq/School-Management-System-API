@@ -68,7 +68,6 @@ module.exports = class StackBolt {
       let fn    = this.mwsRepo[fnKey];
 
       if(!fn) {
-        console.log("___Function not found __ Jumping ____ ")
         this.end({error: `function not found on function ${fnBlueprint.key} `});
       } else {
         /** contains information about which app, which route, and which module
@@ -88,7 +87,6 @@ module.exports = class StackBolt {
           stack: this.stack, 
           self: fn});
         } catch(err){
-          console.log(`failed to execute ${fnKey}:`, err);
           this.end({error: `execution failed on function ${fnKey}, ${err}`})
         }
         

@@ -45,6 +45,7 @@ module.exports = class TokenManager {
     }
 
     _verifyToken({token, secret}){
+        if (!token) return null;
         let decoded = null;
         try {
             decoded = jwt.verify(token, secret);
@@ -65,7 +66,6 @@ module.exports = class TokenManager {
 
 
         let decoded = __longToken;
-        console.log(decoded);
         
         let shortToken = this.genShortToken({
             userId: decoded.userId, 
