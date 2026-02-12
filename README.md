@@ -112,6 +112,18 @@ Every request is validated against strict schemas defined in `user.schema.js`, `
 - **Manager-Loader Pattern**: Decouples business logic from delivery mechanisms (HTTP/CLI/Cortex).
 - **In-Memory Testing**: Integration tests use `mongodb-memory-server` for isolated, fast, and reliable CI/CD pipelines.
 
+### Redis Client Strategy
+The system uses **two Redis clients intentionally**:
+- **node-redis (`redis` package)** → Used exclusively for `express-rate-limit` via `rate-limit-redis`.
+- **ioredis** → Used for Cortex, Oyster, and internal caching/orchestration.
+
+This separation is required because `rate-limit-redis` is designed specifically for `node-redis`. Using `ioredis` with it can cause runtime failures such as:
+
+TypeError: unexpected reply from redis client
+
+Keeping the clients isolated ensures **production stability** and **predictable behavior** across environments.
+
+
 ## 📝 Assumptions
 - A Superadmin is required to create the first School and its respective School Admin.
 - Redis is available for rate limiting; the system falls back gracefully in test environments.
