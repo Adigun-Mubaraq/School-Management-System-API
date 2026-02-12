@@ -113,7 +113,6 @@ module.exports = class ApiHandler {
             try {
                 result = await targetModule[`${fnName}`](data);
             } catch (err){
-                console.log(`error`, err);
                 result.error = `${fnName} failed to execute`;
             }
     
@@ -151,8 +150,13 @@ module.exports = class ApiHandler {
             /** executed after all middleware finished */
 
             let body = req.body || {};
+            let query = req.query || {};
+            let params = req.params || {};
+
             let result = await this._exec({targetModule: this.managers[moduleName], fnName, data: {
                 ...body, 
+                ...query,
+                ...params,
                 ...results,
                 res,
             }});
