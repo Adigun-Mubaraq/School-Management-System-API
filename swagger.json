@@ -1,0 +1,141 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "School Management System API",
+    "version": "1.0.0",
+    "description": "API documentation for the Axion-based School Management System"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5111/api",
+      "description": "Development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "apiKey",
+        "name": "token",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "email": { "type": "string" },
+          "role": { "type": "string", "enum": ["superadmin", "school_admin", "staff"] },
+          "schoolId": { "type": "string" }
+        }
+      },
+      "School": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "contactEmail": { "type": "string" },
+          "phoneNumber": { "type": "string" }
+        }
+      },
+      "Classroom": {
+        "type": "object",
+        "properties": {
+          "schoolId": { "type": "string" },
+          "name": { "type": "string" },
+          "capacity": { "type": "number" }
+        }
+      },
+      "Student": {
+        "type": "object",
+        "properties": {
+          "schoolId": { "type": "string" },
+          "classroomId": { "type": "string" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "email": { "type": "string" },
+          "gender": { "type": "string", "enum": ["male", "female", "other"] }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/user/login": {
+      "post": {
+        "summary": "User login",
+        "tags": ["User"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login successful" }
+        }
+      }
+    },
+    "/school/createSchool": {
+      "post": {
+        "summary": "Create a new school",
+        "tags": ["School"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/School" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "School created" }
+        }
+      }
+    },
+    "/classroom/createClassroom": {
+      "post": {
+        "summary": "Create a new classroom",
+        "tags": ["Classroom"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Classroom" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Classroom created" }
+        }
+      }
+    },
+    "/student/enrollStudent": {
+      "post": {
+        "summary": "Enroll a new student",
+        "tags": ["Student"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Student" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Student enrolled" }
+        }
+      }
+    }
+  }
+}

@@ -4,7 +4,9 @@
   "description": "Boilerplate",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "seed:admin": "node scripts/seedAdmin.js",
+    "test": "jest --no-watchman"
   },
   "author": "",
   "license": "ISC",
@@ -15,14 +17,24 @@
     "debug": "^4.3.4",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
-    "oyster-db": "*",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
     "ion-cortex": "^1.3.6",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
+    "mongoose": "^9.2.1",
     "nanoid": "^3.3.2",
+    "oyster-db": "*",
     "qantra-pineapple": "^1.0.7",
+    "rate-limit-redis": "^4.3.1",
     "request-ip": "^2.1.3",
+    "swagger-ui-express": "^5.0.1",
     "useragent": "^2.3.0"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^11.0.1",
+    "supertest": "^7.2.2"
   }
 }
