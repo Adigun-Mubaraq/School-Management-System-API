@@ -43,6 +43,26 @@ module.exports = class SharkFin {
   /** although adding wild access here add that to the user
    * tree but it shouldn't be checked with every direct access. */
    
+  async isAuthorized({ userId, layer, action, nodeId }) {
+    /** 1. Check Wild Access (Global Roles) */
+    const wildRank = this.getWildAccess({ userId, layer });
+    const actionRank = this._getActionRank({ action });
+
+    if (wildRank >= actionRank && actionRank !== 0) {
+      return true;
+    }
+
+    /** 2. Check Direct Access (Resource Specific) */
+    if (nodeId) {
+      const directRank = await this.getDirectAccessRank({ userId, nodeId });
+      if (directRank >= actionRank && actionRank !== 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   addWildAccess({ userId, layer, action }) {
     if (!this.wildAccess[userId]) this.wildAccess[userId] = {};
     this.wildAccess[userId][layer] = this.actions[action];
@@ -210,13 +230,11 @@ module.exports = class SharkFin {
 
   async _checkInheritance({ layerConfig, layer, nodeId, variant, userId, action, isOwner }) {
     if (layerConfig.inherit) {
-      console.log(`~ lets inherit`)
       /** if the layer allows inhertance **/
       let parentLayer = this._getParentLayerPath({ layer });
       let parentId = null;
       if(nodeId) parentId = this._getParentId({ nodeId });
-      if (!parentLayer) console.log(`parent not found`);
-      else {
+      if (parentLayer) {
         let isGranted = await this.isGranted({
           layer: parentLayer,
           nodeId: parentId ? parentId : undefined,

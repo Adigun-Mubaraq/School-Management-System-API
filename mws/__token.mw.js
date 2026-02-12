@@ -1,21 +1,29 @@
-module.exports = ({ meta, config, managers }) =>{
-    return ({req, res, next})=>{
-        if(!req.headers.token){
-            console.log('token required but not found')
-            return managers.responseDispatcher.dispatch(res, {ok: false, code:401, errors: 'unauthorized'});
+module.exports = ({ meta, config, managers, mongomodels }) => {
+    return async ({ req, res, next }) => {
+        if (!req.headers.token) {
+            return managers.responseDispatcher.dispatch(res, { ok: false, code: 401, errors: 'unauthorized' });
         }
-        let decoded = null
+
+        let decoded = null;
         try {
-            decoded = managers.token.verifyShortToken({token: req.headers.token});
-            if(!decoded){
-                console.log('failed to decode-1')
-                return managers.responseDispatcher.dispatch(res, {ok: false, code:401, errors: 'unauthorized'});
-            };
-        } catch(err){
-            console.log('failed to decode-2')
-            return managers.responseDispatcher.dispatch(res, {ok: false, code:401, errors: 'unauthorized'});
+            decoded = managers.token.verifyShortToken({ token: req.headers.token });
+            if (!decoded) {
+                return managers.responseDispatcher.dispatch(res, { ok: false, code: 401, errors: 'unauthorized' });
+            }
+
+            /** 
+             * Attach user to req object for downstream access
+             * Also fetch full user from DB to ensure they still exist and roles are fresh
+             */
+            const user = await mongomodels.User.findById(decoded.userId);
+            if (!user) {
+                return managers.responseDispatcher.dispatch(res, { ok: false, code: 401, errors: 'unauthorized' });
+            }
+
+            req.user = user;
+            next(user);
+        } catch (err) {
+            return managers.responseDispatcher.dispatch(res, { ok: false, code: 401, errors: 'unauthorized' });
         }
-    
-        next(decoded);
     }
 }
