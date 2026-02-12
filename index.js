@@ -41,4 +41,9 @@ const aeon = new Aeon({ cortex , timestampFrom: Date.now(), segmantDuration: 500
 const managersLoader = new ManagersLoader({config, cache, cortex, oyster, aeon});
 const managers = managersLoader.load();
 
+/** connect to mongo */
+require('./connect/mongo')({
+    uri: config.dotEnv.MONGO_URI
+});
+
 managers.userServer.run();
